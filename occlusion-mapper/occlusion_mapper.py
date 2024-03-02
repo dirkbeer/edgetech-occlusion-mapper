@@ -2,10 +2,9 @@ import os
 import json
 import schedule
 from time import sleep
-from typing import Any, Dict
+from typing import Any
 from datetime import datetime
-import paho.mqtt.client as mqtt
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, request, jsonify
 
 from base_mqtt_pub_sub import BaseMQTTPubSub
 
