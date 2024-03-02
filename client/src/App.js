@@ -21,7 +21,7 @@ window.addEventListener('error', e => {
 });
 
 function App() {
-
+  const [mapping, setMapping] = useState([]); 
   const [pan, setPan] = useState(0);
   const [tilt, setTilt] = useState(0);
   const [zoom, setZoom] = useState(2000);
@@ -29,7 +29,7 @@ function App() {
 
   useEffect( () => {
     try {
-      fetch(`http://localhost:3000/camera?pan=${pan}&tile=${tilt}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
+      //fetch(`http://localhost:5000/camera?pan=${pan}&tile=${tilt}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
   } catch (err) {
       console.log(err.message)
   }

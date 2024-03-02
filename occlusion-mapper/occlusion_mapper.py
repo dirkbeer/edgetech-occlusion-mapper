@@ -2,11 +2,12 @@ import os
 import json
 import schedule
 from time import sleep
-from typing import Any
+from typing import Any, Tuple
 from datetime import datetime
 from flask import Flask, request, jsonify
 
 from base_mqtt_pub_sub import BaseMQTTPubSub
+from typing import Union
 
 
 # inherit functionality from BaseMQTTPubSub parent this way
@@ -30,7 +31,7 @@ class OcclusionMapper(BaseMQTTPubSub):
         sleep(1)
         self.publish_registration("Occlusion Mapper Module Registration")
 
-    def _camera_callback(self: Any) -> str:
+    def _camera_callback(self: Any) -> Tuple[str, int]:
         pan = request.args.get("pan")
         tilt = request.args.get("tilt")
         zoom = request.args.get("zoom")
@@ -54,7 +55,7 @@ class OcclusionMapper(BaseMQTTPubSub):
         )
         self.publish_to_topic(self.publish_topic, payload_json)
         # Do something with pan and tilt parameters
-        return jsonify({"pan": pan, "tilt": tilt})
+        return jsonify({"pan": pan, "tilt": tilt}), 200
 
     def main(self: Any) -> None:
         # main function wraps functionality and always includes a while True
