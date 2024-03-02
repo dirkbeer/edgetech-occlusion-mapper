@@ -22,7 +22,9 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.manual_control_topic = manual_control_topic
 
         self.app = Flask(__name__)
-        self.app.add_url_rule('/camera-point', 'get_data', self._camera_callback)  # Add this line
+        self.app.add_url_rule(
+            "/camera-point", "get_data", self._camera_callback
+        )  # Add this line
 
         # Connect client in constructor
         self.connect_client()
@@ -30,18 +32,13 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.publish_registration("Occlusion Mapper Module Registration")
 
     def _camera_callback(self: Any) -> str:
-        pan = request.args.get('pan')
-        tilt = request.args.get('tilt')
-        zoom = request.args.get('zoom')
+        pan = request.args.get("pan")
+        tilt = request.args.get("tilt")
+        zoom = request.args.get("zoom")
         if pan is None or tilt is None or zoom is None:
-
             return jsonify({"error": "Pan, tilt, and zoom parameters required"}), 400
-        
-        data = {
-            "pan": pan,
-            "tilt": tilt,
-            "zoom": zoom
-        }
+
+        data = {"pan": pan, "tilt": tilt, "zoom": zoom}
 
         payload_json = self.generate_payload_json(
             push_timestamp=int(datetime.utcnow().timestamp()),
