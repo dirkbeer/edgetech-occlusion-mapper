@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 
 from base_mqtt_pub_sub import BaseMQTTPubSub
-from typing import Union
+
 
 
 # inherit functionality from BaseMQTTPubSub parent this way
@@ -53,9 +53,9 @@ class OcclusionMapper(BaseMQTTPubSub):
             data_payload_type="Manual Control",
             data_payload=json.dumps(data),
         )
-        self.publish_to_topic(self.publish_topic, payload_json)
+        self.publish_to_topic(self.manual_control_topic, payload_json)
         # Do something with pan and tilt parameters
-        return jsonify({"pan": pan, "tilt": tilt}), 200
+        return jsonify({"pan": pan, "tilt": tilt, "zoom": zoom}), 200
 
     def main(self: Any) -> None:
         # main function wraps functionality and always includes a while True
@@ -66,20 +66,6 @@ class OcclusionMapper(BaseMQTTPubSub):
             self.publish_heartbeat, payload="Occlusion Mapper Module Heartbeat"
         )
 
-        example_data = {
-            "timestamp": str(int(datetime.utcnow().timestamp())),
-            "data": "Example data payload",
-        }
-
-        # example publish data every 10 minutes
-        schedule.every(10).minutes.do(
-            self.publish_to_topic,
-            topic_name="/example/topic",
-            publish_payload=json.dumps(example_data),
-        )
-
-        # or just publish once
-        self.publish_to_topic(self.example_publish_topic, json.dumps(example_data))
 
         while True:
             try:
