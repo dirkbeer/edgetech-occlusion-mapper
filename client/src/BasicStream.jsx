@@ -41,7 +41,7 @@ export const BasicStream = () => {
       format="RTP_H264"
       autoPlay
       autoRetry
-      vapixParams={{ resolution: '800x600' }}
+      vapixParams={{ resolution: '1280x720' }}
     />
   )
 }
