@@ -20,7 +20,10 @@ const authorize = async () => {
 
 export const BasicStream = () => {
   const [authorized, setAuthorized] = useState(false)
-
+  const camera_ip = process.env['REACT_APP_CAMERA_IP']
+  const camera_username = process.env['REACT_APP_CAMERA_USERNAME']
+  const camera_password = process.env['REACT_APP_CAMERA_PASSWORD']
+  console.log(`camera_ip: ${camera_ip}`)
   useEffect(() => {
     authorize()
       .then(() => {
