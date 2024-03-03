@@ -6,6 +6,7 @@ from time import sleep
 from typing import Any, Tuple
 from datetime import datetime
 from flask import Flask, request, jsonify
+from threading import Thread
 
 from base_mqtt_pub_sub import BaseMQTTPubSub
 
@@ -23,7 +24,7 @@ class OcclusionMapper(BaseMQTTPubSub):
 
         self.app = Flask(__name__)
         self.app.add_url_rule("/camera-point", "camera-point", self._camera_callback)  # Add this line
-        self.app.run(host="0.0.0.0", debug=True, port=5000)
+        #self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
         self.connect_client()
@@ -66,6 +67,9 @@ class OcclusionMapper(BaseMQTTPubSub):
         schedule.every(10).seconds.do(
             self.publish_heartbeat, payload="Occlusion Mapper Module Heartbeat"
         )
+
+        frontend_thread = Thread(target=self.app.run, kwargs={"host":"0.0.0.0", "port":5000, "debug":False})
+        frontend_thread.start()
 
         while True:
             try:
