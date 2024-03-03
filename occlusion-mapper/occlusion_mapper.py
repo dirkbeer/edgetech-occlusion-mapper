@@ -10,7 +10,6 @@ from flask import Flask, request, jsonify
 from base_mqtt_pub_sub import BaseMQTTPubSub
 
 
-
 # inherit functionality from BaseMQTTPubSub parent this way
 class OcclusionMapper(BaseMQTTPubSub):
     def __init__(
@@ -23,9 +22,7 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.manual_control_topic = manual_control_topic
 
         self.app = Flask(__name__)
-        self.app.add_url_rule(
-            "/camera-point", "get_data", self._camera_callback
-        )  # Add this line
+        self.app.add_url_rule("/camera-point", self._camera_callback)  # Add this line
 
         # Connect client in constructor
         self.connect_client()
@@ -68,7 +65,6 @@ class OcclusionMapper(BaseMQTTPubSub):
         schedule.every(10).seconds.do(
             self.publish_heartbeat, payload="Occlusion Mapper Module Heartbeat"
         )
-
 
         while True:
             try:
