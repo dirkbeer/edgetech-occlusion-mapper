@@ -29,8 +29,8 @@ function App() {
 
   useEffect(() => {
     try {
-      
-      fetch(`http://localhost:5000/camera-point?pan=${pan}&tile=${tilt}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
+
+      fetch(`http://localhost:5000/camera-point?pan=${pan}&tilt=${tilt}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
     } catch (err) {
       console.log(err.message)
     }

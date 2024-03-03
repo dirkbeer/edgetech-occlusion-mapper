@@ -55,6 +55,9 @@ class OcclusionMapper(BaseMQTTPubSub):
             data_payload_type="Manual Control",
             data_payload=json.dumps(data),
         )
+
+        logging.info(f"Camera Point request sent to {self.manual_control_topic}")
+        logging.info(f"Camera Point request sent with payload: {payload_json}")
         self.publish_to_topic(self.manual_control_topic, payload_json)
         # Do something with pan and tilt parameters
         return jsonify({"pan": pan, "tilt": tilt, "zoom": zoom}), 200
