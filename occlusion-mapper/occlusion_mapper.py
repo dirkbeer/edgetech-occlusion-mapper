@@ -6,6 +6,7 @@ from time import sleep
 from typing import Any, Tuple
 from datetime import datetime
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 from threading import Thread
 
 from base_mqtt_pub_sub import BaseMQTTPubSub
@@ -25,8 +26,10 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.mapping_filepath = mapping_filepath
 
         self.app = Flask(__name__)
+        CORS(self.app)  # Add this line to enable CORS
         self.app.add_url_rule("/camera-point", "camera-point", self._camera_callback)  # Add this line
         self.app.add_url_rule("/save-mapping", "save-mapping", self._save_mapping_callback, methods=["POST"])  # Add this line
+        
         #self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
