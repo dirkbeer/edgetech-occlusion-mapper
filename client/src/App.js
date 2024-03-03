@@ -22,28 +22,28 @@ window.addEventListener('error', e => {
 
 function App() {
   const [mapping, setMapping] = useState([]);
-  const [pan, setPan] = useState(0);
-  const [tilt, setTilt] = useState(0);
+  const [azimuth, setAzimuth] = useState(0);
+  const [elevation, setElevation] = useState(0);
   const [zoom, setZoom] = useState(2000);
 
 
   useEffect(() => {
     try {
 
-      fetch(`http://localhost:5000/camera-point?pan=${pan}&tilt=${tilt}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
+      fetch(`http://localhost:5000/camera-point?azimuth=${azimuth}&elevation=${elevation}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
     } catch (err) {
       console.log(err.message)
     }
-  }, [pan, tilt, zoom]);
+  }, [azimuth, elevation, zoom]);
 
-  const handlePanChange = (amount) => {
-    var new_pan = pan + amount;
-    setPan(new_pan);
+  const handleAzimuthChange = (amount) => {
+    var new_azimuth = azimuth + amount;
+    setAzimuth(new_azimuth);
   }
 
-  const handleTiltChange = (amount) => {
-    var new_tilt = tilt + amount;
-    setTilt(new_tilt);
+  const handleElevationChange = (amount) => {
+    var new_elevation = elevation + amount;
+    setElevation(new_elevation);
   }
 
   const handleZoomChange = (amount) => {
@@ -53,14 +53,14 @@ function App() {
 
 
   const upsertMapping = () => {
-    var index = mapping.findIndex(item => item.pan === pan);
+    var index = mapping.findIndex(item => item.azimuth === azimuth);
 
-    // If we have a value at the current Pan, update it
+    // If we have a value at the current Azimuth, update it
     if (index >= 0) {
       const updated_mapping = mapping.map((c, i) => {
         if (i === index) {
-          // Update the pan value that changed
-          return {pan, tilt};
+          // Update the azimuth value that changed
+          return {azimuth, elevation};
         } else {
           // The rest haven't changed
           return c;
@@ -68,16 +68,16 @@ function App() {
       });
       setMapping(updated_mapping);
     } else {
-      // If we don't have a value at the current Pan, add it
+      // If we don't have a value at the current Azimuth, add it
       const updated_mapping = [ // with a new array
         ...mapping, // that contains all the old items
-        { pan, tilt } // and one new item at the end
+        { azimuth, elevation } // and one new item at the end
       ]
 
       const sorted_mapping = updated_mapping.sort(function (a, b) {
-        // Sort the array by pan
-        if (a.pan > b.pan) { return 1; }
-        if (a.pan < b.pan) { return -1; }
+        // Sort the array by azimuth
+        if (a.azimuth > b.azimuth) { return 1; }
+        if (a.azimuth < b.azimuth) { return -1; }
         return 0;
       });
       setMapping(sorted_mapping);
@@ -91,18 +91,18 @@ function App() {
           <td className="App"> <BasicStream /></td>
           <td>
             <div>
-              <button onClick={() => { handlePanChange(-10) }}>Decrease Pan</button>
-              {pan}
-              <button onClick={() => { handlePanChange(10) }}>Increase Pan</button> </div>
+              <button onClick={() => { handleAzimuthChange(-10) }}>Decrease Azimuth</button>
+              {azimuth}
+              <button onClick={() => { handleAzimuthChange(10) }}>Increase Azimuth</button> </div>
 
             <div>
-              <button onClick={() => { handleTiltChange(-10) }}>Decrease Pan</button>
-              {tilt}
-              <button onClick={() => { handleTiltChange(10) }}>Increase Pan</button></div>
+              <button onClick={() => { handleElevationChange(-10) }}>Decrease Elevation</button>
+              {elevation}
+              <button onClick={() => { handleElevationChange(10) }}>Increase Elevation</button></div>
             <div>
-              <button onClick={() => { handleZoomChange(-200) }}>Decrease Pan</button>
+              <button onClick={() => { handleZoomChange(-200) }}>Decrease Zoom</button>
               {zoom}
-              <button onClick={() => { handleZoomChange(200) }}>Increase Pan</button></div>
+              <button onClick={() => { handleZoomChange(200) }}>Increase Zoom</button></div>
               <button onClick={upsertMapping}>Add Point</button>
           </td>
         </tr>

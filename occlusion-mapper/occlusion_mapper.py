@@ -33,14 +33,14 @@ class OcclusionMapper(BaseMQTTPubSub):
         logging.info("Occlusion Mapper Module Started")
 
     def _camera_callback(self: Any) -> Tuple[str, int]:
-        pan = float(request.args.get("pan"))
-        tilt = float(request.args.get("tilt"))
+        azimuth = float(request.args.get("azimuth"))
+        elevation = float(request.args.get("elevation"))
         zoom = float(request.args.get("zoom"))
-        logging.info(f"Camera Point request tilt: {tilt}, pan: {pan}, zoom: {zoom}")
-        if pan is None or tilt is None or zoom is None:
-            return jsonify({"error": "Pan, tilt, and zoom parameters required"}), 400
+        logging.info(f"Camera Point request elevation: {elevation}, azimuth: {azimuth}, zoom: {zoom}")
+        if azimuth is None or elevation is None or zoom is None:
+            return jsonify({"error": "Pan, elevation, and zoom parameters required"}), 400
 
-        data = {"pan": pan, "tilt": tilt, "zoom": zoom}
+        data = {"azimuth": azimuth, "elevation": elevation, "zoom": zoom}
 
         payload_json = self.generate_payload_json(
             push_timestamp=int(datetime.utcnow().timestamp()),
@@ -56,11 +56,9 @@ class OcclusionMapper(BaseMQTTPubSub):
             data_payload=json.dumps(data),
         )
 
-        logging.info(f"Camera Point request sent to {self.manual_control_topic}")
-        logging.info(f"Camera Point request sent with payload: {payload_json}")
         self.publish_to_topic(self.manual_control_topic, payload_json)
-        # Do something with pan and tilt parameters
-        return jsonify({"pan": pan, "tilt": tilt, "zoom": zoom}), 200
+        # Do something with azimuth and elevation parameters
+        return jsonify({"azimuth": azimuth, "elevation": elevation, "zoom": zoom})
 
     def main(self: Any) -> None:
         # main function wraps functionality and always includes a while True
