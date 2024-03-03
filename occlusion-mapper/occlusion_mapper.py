@@ -22,7 +22,8 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.manual_control_topic = manual_control_topic
 
         self.app = Flask(__name__)
-        self.app.add_url_rule("/camera-point", self._camera_callback)  # Add this line
+        self.app.add_url_rule("/camera-point", "camera-point", self._camera_callback)  # Add this line
+        self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
         self.connect_client()
