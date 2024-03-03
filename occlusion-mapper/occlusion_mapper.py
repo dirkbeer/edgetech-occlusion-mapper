@@ -1,6 +1,7 @@
 import os
 import json
 import schedule
+import logging
 from time import sleep
 from typing import Any, Tuple
 from datetime import datetime
@@ -30,11 +31,13 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.connect_client()
         sleep(1)
         self.publish_registration("Occlusion Mapper Module Registration")
+        logging.info("Occlusion Mapper Module Started")
 
     def _camera_callback(self: Any) -> Tuple[str, int]:
         pan = request.args.get("pan")
         tilt = request.args.get("tilt")
         zoom = request.args.get("zoom")
+        logging.info(f"Camera Point request tilt: {tilt}, pan: {pan}, zoom: {zoom}")
         if pan is None or tilt is None or zoom is None:
             return jsonify({"error": "Pan, tilt, and zoom parameters required"}), 400
 
