@@ -33,12 +33,16 @@ class OcclusionMapper(BaseMQTTPubSub):
         logging.info("Occlusion Mapper Module Started")
 
     def _camera_callback(self: Any) -> Tuple[str, int]:
-        azimuth = float(request.args.get("azimuth"))
-        elevation = float(request.args.get("elevation"))
-        zoom = float(request.args.get("zoom"))
+        azimuth = request.args.get("azimuth")
+        elevation = request.args.get("elevation")
+        zoom = request.args.get("zoom")
         logging.info(f"Camera Point request elevation: {elevation}, azimuth: {azimuth}, zoom: {zoom}")
         if azimuth is None or elevation is None or zoom is None:
             return jsonify({"error": "Pan, elevation, and zoom parameters required"}), 400
+        azimuth = float(azimuth)
+        elevation = float(elevation)
+        zoom = float(zoom)
+
 
         data = {"azimuth": azimuth, "elevation": elevation, "zoom": zoom}
 
