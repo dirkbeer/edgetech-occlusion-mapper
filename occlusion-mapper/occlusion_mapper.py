@@ -16,14 +16,17 @@ class OcclusionMapper(BaseMQTTPubSub):
     def __init__(
         self: Any,
         manual_control_topic: str,
+        mapping_filepath: str,
         **kwargs: Any,
     ):
         # Pass environment variables as parameters (include **kwargs) in super().__init__()
         super().__init__(**kwargs)
         self.manual_control_topic = manual_control_topic
+        self.mapping_filepath = mapping_filepath
 
         self.app = Flask(__name__)
         self.app.add_url_rule("/camera-point", "camera-point", self._camera_callback)  # Add this line
+        self.app.add_url_rule("/save-mapping", "save-mapping", self._save_mapping_callback)  # Add this line
         #self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
@@ -31,6 +34,32 @@ class OcclusionMapper(BaseMQTTPubSub):
         sleep(1)
         self.publish_registration("Occlusion Mapper Module Registration")
         logging.info("Occlusion Mapper Module Started")
+        # Log configuration parameters
+        self._log_config()
+
+    def _log_config(self) -> None:
+        """Logs all paramters that can be set on construction."""
+        config = {
+            "manual_control_topic": self.manual_control_topic,
+            "mapping_filepath": self.mapping_filepath,
+        }
+        logging.info(
+            f"Occlusion Mapper configuration:\n{json.dumps(config, indent=4)}"
+        )
+
+
+    def _save_mapping_callback(self: Any) -> Tuple[str, int]:
+        # Do something with the data
+        data = request.get_json()
+        logging.info(f"Save Mapping request: {data}")
+        # Serializing json
+        json_object = json.dumps(data, indent=4)
+        
+        # Writing to sample.json
+        with open(self.mapping_filepath, "w") as outfile:
+            outfile.write(json_object)
+        return jsonify({"status": "success"})
+
 
     def _camera_callback(self: Any) -> Tuple[str, int]:
         azimuth = request.args.get("azimuth")
@@ -94,6 +123,7 @@ if __name__ == "__main__":
     # and environment variables should be in the docker compose (in a .env file)
     template = OcclusionMapper(
         manual_control_topic=str(os.environ.get("MANUAL_CONTROL_TOPIC")),
+        mapping_filepath=str(os.environ.get("MAPPING_FILEPATH")),
         mqtt_ip=str(os.environ.get("MQTT_IP")),
     )
     # call the main function

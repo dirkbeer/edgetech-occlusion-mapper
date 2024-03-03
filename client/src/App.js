@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { BasicStream } from './BasicStream'
 import React, { useCallback, useState, useEffect } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 window.addEventListener('error', e => {
   if (e.message === 'ResizeObserver loop limit exceeded' || e.message === 'ResizeObserver loop completed with undelivered notifications.') {
@@ -38,16 +39,35 @@ function App() {
 
   const handleAzimuthChange = (amount) => {
     var new_azimuth = azimuth + amount;
+    if (new_azimuth > 360) {
+      new_azimuth = new_azimuth % 360;
+    }
+    if (new_azimuth < 0) {
+      new_azimuth = 360 + new_azimuth;
+    }
     setAzimuth(new_azimuth);
   }
 
   const handleElevationChange = (amount) => {
+
     var new_elevation = elevation + amount;
+    if (new_elevation > 90) {
+      new_elevation = 90;
+    }
+    if (new_elevation < 0) {
+      new_elevation = 0;
+    }
     setElevation(new_elevation);
   }
 
   const handleZoomChange = (amount) => {
     var new_zoom = zoom + amount;
+    if (new_zoom > 9999) {
+      new_zoom = 9999;
+    }
+    if (new_zoom < 1) {
+      new_zoom = 1;
+    }
     setZoom(new_zoom);
   }
 
@@ -84,6 +104,25 @@ function App() {
     }
     console.log(mapping);
   }
+
+  const saveMapping = () => {
+    fetch('http://localhost:5000/save-mapping', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(mapping),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+
+
   return (
     <div >
       <table>
@@ -91,23 +130,57 @@ function App() {
           <td className="App"> <BasicStream /></td>
           <td>
             <div>
-              <button onClick={() => { handleAzimuthChange(-10) }}>Decrease Azimuth</button>
+              <h3>Azimuth</h3>
+              <button onClick={() => { handleAzimuthChange(-10) }}>-10</button>
+              <button onClick={() => { handleAzimuthChange(-5) }}>-5</button>
+              <button onClick={() => { handleAzimuthChange(-1) }}>-1</button>
               {azimuth}
-              <button onClick={() => { handleAzimuthChange(10) }}>Increase Azimuth</button> </div>
+              <button onClick={() => { handleAzimuthChange(1) }}>+1</button>
+              <button onClick={() => { handleAzimuthChange(5) }}>+5</button>
+              <button onClick={() => { handleAzimuthChange(10) }}>+10</button> </div>
 
             <div>
-              <button onClick={() => { handleElevationChange(-10) }}>Decrease Elevation</button>
+              <h3>Elevation</h3>
+              <button onClick={() => { handleElevationChange(-10) }}>-10</button>
+              <button onClick={() => { handleElevationChange(-5) }}>-5</button>
+              <button onClick={() => { handleElevationChange(-1) }}>-1</button>
               {elevation}
-              <button onClick={() => { handleElevationChange(10) }}>Increase Elevation</button></div>
+              <button onClick={() => { handleElevationChange(1) }}>1</button>
+              <button onClick={() => { handleElevationChange(5) }}>5</button>
+              <button onClick={() => { handleElevationChange(10) }}>10</button></div>
             <div>
-              <button onClick={() => { handleZoomChange(-200) }}>Decrease Zoom</button>
+              <h3>Zoom</h3>
+              <button onClick={() => { handleZoomChange(-1000) }}>-1000</button>
+              <button onClick={() => { handleZoomChange(-200) }}>-200</button>
               {zoom}
-              <button onClick={() => { handleZoomChange(200) }}>Increase Zoom</button></div>
+              <button onClick={() => { handleZoomChange(200) }}>200</button>
+              <button onClick={() => { handleZoomChange(200) }}>1000</button></div>
+              <div>
+                <h3>Mapping</h3>
               <button onClick={upsertMapping}>Add Point</button>
+              <button onClick={saveMapping}>Save Mapping</button>
+              </div>
           </td>
         </tr>
       </table>
-
+      <div >
+      <ResponsiveContainer width="95%" height={400}>
+    <LineChart
+      height={300}
+      data={mapping}
+      margin={{
+        top: 5, right: 30, left: 20, bottom: 5,
+      }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="azimuth" domain={[0, 360]} />
+      <YAxis dataKey="elevation" domain={[0, 90]} /> // Set the Y-axis domain to [0, 90]
+      <Tooltip />
+      <Legend />
+      <Line type="monotone" dataKey="elevation" stroke="#8884d8" activeDot={{ r: 8 }} />
+    </LineChart>
+    </ResponsiveContainer>
+  </div>
 
     </div>
   );
