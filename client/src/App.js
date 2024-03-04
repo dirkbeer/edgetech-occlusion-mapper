@@ -4,6 +4,7 @@ import { BasicStream } from './BasicStream'
 import React, { useCallback, useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+
 window.addEventListener('error', e => {
   if (e.message === 'ResizeObserver loop limit exceeded' || e.message === 'ResizeObserver loop completed with undelivered notifications.') {
     const resizeObserverErrDiv = document.getElementById(
@@ -39,12 +40,19 @@ function App() {
 
   const handleAzimuthChange = (amount) => {
     var new_azimuth = azimuth + amount;
+    if (new_azimuth > 180) {
+      new_azimuth =  (new_azimuth %180) - 180;
+    }
+    if (new_azimuth < -179) {
+      new_azimuth = 360+new_azimuth;
+    }
+/*
     if (new_azimuth > 360) {
       new_azimuth = new_azimuth % 360;
     }
     if (new_azimuth < 0) {
       new_azimuth = 360 + new_azimuth;
-    }
+    }*/
     setAzimuth(new_azimuth);
   }
 
@@ -130,25 +138,74 @@ function App() {
         <tr>
           <td className="App"> <BasicStream /></td>
           <td>
-            <div>
-              <h3>Azimuth</h3>
-              <button onClick={() => { handleAzimuthChange(-10) }}>-10</button>
-              <button onClick={() => { handleAzimuthChange(-5) }}>-5</button>
-              <button onClick={() => { handleAzimuthChange(-1) }}>-1</button>
-              {azimuth}
-              <button onClick={() => { handleAzimuthChange(1) }}>+1</button>
-              <button onClick={() => { handleAzimuthChange(5) }}>+5</button>
-              <button onClick={() => { handleAzimuthChange(10) }}>+10</button> </div>
+            <table>
+              <tbody>
+                <tr>
+                  <td/>
+                  <td/>
+                  <td/>
+                  <td><button onClick={() => { handleElevationChange(10) }}>10</button></td>
+                  <td/>
+                  <td/>
+                  <td/>
+                  </tr>
+                  <tr>
+                  <td/>
+                  <td/>
+                  <td/>
+                  <td><button onClick={() => { handleElevationChange(5) }}>5</button></td>
+                  <td/>
+                  <td/>
+                  <td/>
+                  </tr>
+                  <tr>
+                  <td/>
+                  <td/>
+                  <td/>
+                  <td><button onClick={() => { handleElevationChange(1) }}>1</button></td>
+                  <td/>
+                  <td/>
+                  <td/>
+                  </tr>
+                  <tr>
+                  <td><button onClick={() => { handleAzimuthChange(-10) }}>-10</button></td>
+                  <td><button onClick={() => { handleAzimuthChange(-5) }}>-5</button></td>
+                  <td><button onClick={() => { handleAzimuthChange(-1) }}>-1</button></td>
+                  <td>{azimuth} / {elevation}</td>
+                  <td><button onClick={() => { handleAzimuthChange(1) }}>1</button></td>
+                  <td><button onClick={() => { handleAzimuthChange(5) }}>5</button></td>
+                  <td><button onClick={() => { handleAzimuthChange(10) }}>10</button></td>
+                  </tr>
+                  <tr>
+                  <td/>
+                  <td/>
+                  <td/>
+                  <td><button onClick={() => { handleElevationChange(-1) }}>-1</button></td>
+                  <td/>
+                  <td/>
+                  <td/>
+                  </tr>
+                  <tr>
+                  <td/>
+                  <td/>
+                  <td/>
+                  <td><button onClick={() => { handleElevationChange(-5) }}>-5</button></td>
+                  <td/>
+                  <td/>
+                  <td/>
+                  </tr>
+                  <tr>
+                  <td/>
+                  <td/>
+                  <td/>
+                  <td><button onClick={() => { handleElevationChange(-10) }}>-10</button></td>
+                  <td/>
+                  <td/>
+                  <td/>
+                  </tr>
+              </tbody>
+            </table>
 
-            <div>
-              <h3>Elevation</h3>
-              <button onClick={() => { handleElevationChange(-10) }}>-10</button>
-              <button onClick={() => { handleElevationChange(-5) }}>-5</button>
-              <button onClick={() => { handleElevationChange(-1) }}>-1</button>
-              {elevation}
-              <button onClick={() => { handleElevationChange(1) }}>1</button>
-              <button onClick={() => { handleElevationChange(5) }}>5</button>
-              <button onClick={() => { handleElevationChange(10) }}>10</button></div>
             <div>
               <h3>Zoom</h3>
               <button onClick={() => { handleZoomChange(-1000) }}>-1000</button>
@@ -174,7 +231,7 @@ function App() {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="azimuth" domain={[0, 360]} />
+      <XAxis dataKey="azimuth" domain={[-179, 180]} />
       <YAxis dataKey="elevation" domain={[0, 90]} /> // Set the Y-axis domain to [0, 90]
       <Tooltip />
       <Legend />
