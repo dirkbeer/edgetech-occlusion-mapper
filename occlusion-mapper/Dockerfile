@@ -7,9 +7,9 @@ RUN npm run build
 
 
 FROM iqtlabs/edgetech-core:latest
-RUN mkdir -p /app/static
-WORKDIR /app
-COPY --from=build /build/* /app/static
+RUN mkdir -p /static
+WORKDIR /
+COPY --from=build /build/* /static
 COPY pyproject.toml .
 COPY poetry.lock .
 RUN pip3 install poetry==1.5.1
