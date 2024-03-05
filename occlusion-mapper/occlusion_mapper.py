@@ -29,12 +29,21 @@ class OcclusionMapper(BaseMQTTPubSub):
 
         self.app = Flask(__name__)
         CORS(self.app)  # Add this line to enable CORS
-        self.app.add_url_rule("/camera-point", "camera-point", self._camera_callback)  # Add this line
-        self.app.add_url_rule("/save-mapping", "save-mapping", self._save_mapping_callback, methods=["POST"])  # Add this line
-        @self.app.route('/camera.js')
+        self.app.add_url_rule(
+            "/camera-point", "camera-point", self._camera_callback
+        )  # Add this line
+        self.app.add_url_rule(
+            "/save-mapping",
+            "save-mapping",
+            self._save_mapping_callback,
+            methods=["POST"],
+        )  # Add this line
+
+        @self.app.route("/camera.js")
         def hello_world():
             return f'var camera_ip = "{self.camera_ip}";'
-        #self.app.run(host="0.0.0.0", debug=True, port=5000)
+
+        # self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
         self.connect_client()
@@ -51,10 +60,7 @@ class OcclusionMapper(BaseMQTTPubSub):
             "mapping_filepath": self.mapping_filepath,
             "camera_ip": self.camera_ip,
         }
-        logging.info(
-            f"Occlusion Mapper configuration:\n{json.dumps(config, indent=4)}"
-        )
-
+        logging.info(f"Occlusion Mapper configuration:\n{json.dumps(config, indent=4)}")
 
     def _save_mapping_callback(self: Any) -> Tuple[str, int]:
         # Do something with the data
@@ -62,24 +68,27 @@ class OcclusionMapper(BaseMQTTPubSub):
         logging.info(f"Save Mapping request: {data}")
         # Serializing json
         json_object = json.dumps(data, indent=4)
-        
+
         # Writing to sample.json
         with open(self.mapping_filepath, "w") as outfile:
             outfile.write(json_object)
         return jsonify({"status": "success"})
 
-
     def _camera_callback(self: Any) -> Tuple[str, int]:
         azimuth = request.args.get("azimuth")
         elevation = request.args.get("elevation")
         zoom = request.args.get("zoom")
-        logging.info(f"Camera Point request elevation: {elevation}, azimuth: {azimuth}, zoom: {zoom}")
+        logging.info(
+            f"Camera Point request elevation: {elevation}, azimuth: {azimuth}, zoom: {zoom}"
+        )
         if azimuth is None or elevation is None or zoom is None:
-            return jsonify({"error": "Pan, elevation, and zoom parameters required"}), 400
+            return (
+                jsonify({"error": "Pan, elevation, and zoom parameters required"}),
+                400,
+            )
         azimuth = float(azimuth)
         elevation = float(elevation)
         zoom = float(zoom)
-
 
         data = {"azimuth": azimuth, "elevation": elevation, "zoom": zoom}
 
@@ -110,7 +119,10 @@ class OcclusionMapper(BaseMQTTPubSub):
             self.publish_heartbeat, payload="Occlusion Mapper Module Heartbeat"
         )
 
-        frontend_thread = Thread(target=self.app.run, kwargs={"host":"0.0.0.0", "port":5000, "debug":False})
+        frontend_thread = Thread(
+            target=self.app.run,
+            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
+        )
         frontend_thread.start()
 
         while True:

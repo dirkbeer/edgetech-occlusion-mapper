@@ -2,7 +2,7 @@ FROM node:16.17.1-alpine3.16 as build
 COPY client  /
 WORKDIR /client
 RUN ls
-RUN npm install
+RUN npm install --force
 RUN npm run build
 
 
