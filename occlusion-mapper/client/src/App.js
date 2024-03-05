@@ -5,6 +5,8 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
+
+
 window.addEventListener('error', e => {
   if (e.message === 'ResizeObserver loop limit exceeded' || e.message === 'ResizeObserver loop completed with undelivered notifications.') {
     const resizeObserverErrDiv = document.getElementById(
@@ -32,7 +34,7 @@ function App() {
   useEffect(() => {
     try {
 
-      fetch(`http://localhost:5000/camera-point?azimuth=${azimuth}&elevation=${elevation}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
+      fetch(`/camera-point?azimuth=${azimuth}&elevation=${elevation}&zoom=${zoom}`).then(response => response.json()).then(data => console.log(data));
     } catch (err) {
       console.log(err.message)
     }
@@ -114,7 +116,7 @@ function App() {
   }
 
   const saveMapping = () => {
-    fetch('http://localhost:5000/save-mapping', {
+    fetch(`/save-mapping`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
