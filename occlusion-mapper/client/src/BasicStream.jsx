@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-
 import { BasicPlayer } from 'media-stream-player'
 
 // Force a login by fetching usergroup

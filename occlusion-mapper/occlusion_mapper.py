@@ -18,18 +18,22 @@ class OcclusionMapper(BaseMQTTPubSub):
         self: Any,
         manual_control_topic: str,
         mapping_filepath: str,
+        camera_ip: str,
         **kwargs: Any,
     ):
         # Pass environment variables as parameters (include **kwargs) in super().__init__()
         super().__init__(**kwargs)
         self.manual_control_topic = manual_control_topic
         self.mapping_filepath = mapping_filepath
+        self.camera_ip = camera_ip
 
         self.app = Flask(__name__)
         CORS(self.app)  # Add this line to enable CORS
         self.app.add_url_rule("/camera-point", "camera-point", self._camera_callback)  # Add this line
         self.app.add_url_rule("/save-mapping", "save-mapping", self._save_mapping_callback, methods=["POST"])  # Add this line
-        
+        @self.app.route('/camera.js')
+        def hello_world():
+            return f'var camera_ip = "{self.camera_ip}";'
         #self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
@@ -45,6 +49,7 @@ class OcclusionMapper(BaseMQTTPubSub):
         config = {
             "manual_control_topic": self.manual_control_topic,
             "mapping_filepath": self.mapping_filepath,
+            "camera_ip": self.camera_ip,
         }
         logging.info(
             f"Occlusion Mapper configuration:\n{json.dumps(config, indent=4)}"
@@ -128,6 +133,7 @@ if __name__ == "__main__":
         manual_control_topic=str(os.environ.get("MANUAL_CONTROL_TOPIC")),
         mapping_filepath=str(os.environ.get("MAPPING_FILEPATH")),
         mqtt_ip=str(os.environ.get("MQTT_IP")),
+        camera_ip=str(os.environ.get("CAMERA_IP")),
     )
     # call the main function
     template.main()
