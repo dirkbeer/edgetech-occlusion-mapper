@@ -44,7 +44,7 @@ class OcclusionMapper(BaseMQTTPubSub):
             return f'var camera_ip = "{self.camera_ip}";'
         
         # Set the default entrance point to 'index.html'
-        @app.route('/')
+        @self.app.route('/')
         def index():
             return send_from_directory('static', 'index.html')
         # self.app.run(host="0.0.0.0", debug=True, port=5000)
