@@ -5,7 +5,7 @@ import logging
 from time import sleep
 from typing import Any, Tuple
 from datetime import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS, cross_origin
 from threading import Thread
 
@@ -43,10 +43,13 @@ class OcclusionMapper(BaseMQTTPubSub):
         def hello_world():
             return f'var camera_ip = "{self.camera_ip}";'
         
+        @self.app.route("/")
+        def hello():
+            return render_template("index.html")
         # Set the default entrance point to 'index.html'
-        @self.app.route('/')
-        def index():
-            return send_from_directory('static', 'index.html')
+        # @self.app.route('/')
+        # def index():
+        #     return send_from_directory('static', 'index.html')
         # self.app.run(host="0.0.0.0", debug=True, port=5000)
 
         # Connect client in constructor
@@ -125,7 +128,8 @@ class OcclusionMapper(BaseMQTTPubSub):
 
         frontend_thread = Thread(
             target=self.app.run,
-            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
+            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "static_url_path":"", "static_folder":"static",
+                  "template_folder": "static"},
         )
         frontend_thread.start()
 
