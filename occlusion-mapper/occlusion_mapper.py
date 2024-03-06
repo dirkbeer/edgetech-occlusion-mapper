@@ -27,7 +27,7 @@ class OcclusionMapper(BaseMQTTPubSub):
         self.mapping_filepath = mapping_filepath
         self.camera_ip = camera_ip
 
-        self.app = Flask(__name__)
+        self.app = Flask(__name__, static_url_path="", static_folder="static", template_folder="static")
         CORS(self.app)  # Add this line to enable CORS
         self.app.add_url_rule(
             "/camera-point", "camera-point", self._camera_callback
@@ -128,8 +128,7 @@ class OcclusionMapper(BaseMQTTPubSub):
 
         frontend_thread = Thread(
             target=self.app.run,
-            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "static_url_path":"", "static_folder":"static",
-                  "template_folder": "static"},
+            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
         )
         frontend_thread.start()
 
