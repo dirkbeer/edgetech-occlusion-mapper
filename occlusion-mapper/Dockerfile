@@ -1,15 +1,15 @@
 FROM node:16.17.1-alpine3.16 as build
 COPY client  /
-WORKDIR /client
-RUN ls
+WORKDIR /
 RUN npm install --force
 RUN npm run build
+
 
 
 FROM iqtlabs/edgetech-core:latest
 RUN mkdir -p /static
 WORKDIR /
-COPY --from=build /build/* /static
+COPY --from=build /build/ /static
 COPY pyproject.toml .
 COPY poetry.lock .
 RUN pip3 install poetry==1.5.1
