@@ -34,30 +34,30 @@
 <h1 align="center">EdgeTech Occlusion Mapper</h1>
 
 
-    Occlusion Mapper lets you record that area around a Pan Tilt Zoom camera that is a blocked by something in the way, like a building or trees. It produces an array of Azimuth and Elevation values. This array provides what is the lowest possible elevation that can be used at a given azimuth.
+  Occlusion Mapper lets you record that area around a Pan Tilt Zoom camera that is a blocked by something in the way, like a building or trees. It produces an array of Azimuth and Elevation values. This array provides what is the lowest possible elevation that can be used at a given azimuth.
 
 
-    ## Running Things
-    Occlusion Mapper is available as a Docker Image on Docker Hub. Unless you are looking on making modifications to the code, you can just use the Docker Image that is available there. The included [docker-compose](./docker-compose.yaml) file provides an example of how to use that file. 
+  ## Running Things
+  Occlusion Mapper is available as a Docker Image on Docker Hub. Unless you are looking on making modifications to the code, you can just use the Docker Image that is available there. The included [docker-compose](./docker-compose.yaml) file provides an example of how to use that file. 
 
 
-    The [occlusion-mapper.env](./occlusion-mapper.env) file provides the set of environment variables that need to be set. Save a copy this file as `.env` and then modify it for your local install. You will probably need to change the Project & Device names, along with the IP address for the camera.
+  The [occlusion-mapper.env](./occlusion-mapper.env) file provides the set of environment variables that need to be set. Save a copy this file as `.env` and then modify it for your local install. You will probably need to change the Project & Device names, along with the IP address for the camera.
 
 
-    ## Usage 
-    
-    Launch the container using Docker Compose: `docker compose up`
+  ## Usage 
+  
+  Launch the container using Docker Compose: `docker compose up`
 
-    If the container is running locally, navigate to: [http://localhost:5000](http://localhost:5000) in your browser.
+  If the container is running locally, navigate to: [http://localhost:5000](http://localhost:5000) in your browser.
 
-    Otherwise, if the container is running on another machine, navigate to that IP address with port 5000. For example: `http://192.168.1.111:5000`
+  Otherwise, if the container is running on another machine, navigate to that IP address with port 5000. For example: `http://192.168.1.111:5000`
 
-    This will bring up a rudimentary web interface that lets you control the camera and record different Azimuth/Elevation values. To map out the ooclusions around your camera:
+  This will bring up a rudimentary web interface that lets you control the camera and record different Azimuth/Elevation values. To map out the ooclusions around your camera:
 
-    1. Starting at 0° azimuth, find the camera elevation where you begin to have a clear view of the sky in the middle of the screen. 
-    1. Next hit the **Add Point** button to record this value. The Graph at the bottom of the screen should update with this value. 
-    1. Move the camera to the right. If the center of the frame no longer lines up with where planes would begin to be visible, adjust the Elevation and then hit **Add Point**
-    1. Continue this process until you have arrive back at 0° azimuth
+  1. Starting at 0° azimuth, find the camera elevation where you begin to have a clear view of the sky in the middle of the screen. 
+  1. Next hit the **Add Point** button to record this value. The Graph at the bottom of the screen should update with this value. 
+  1. Move the camera to the right. If the center of the frame no longer lines up with where planes would begin to be visible, adjust the Elevation and then hit **Add Point**
+  1. Continue this process until you have arrive back at 0° azimuth
     
   
 
