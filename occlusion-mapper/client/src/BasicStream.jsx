@@ -19,10 +19,11 @@ const authorize = async () => {
 
 export const BasicStream = () => {
   const [authorized, setAuthorized] = useState(false)
-  const camera_ip = process.env['REACT_APP_CAMERA_IP']
+  const camera_ip = window.camera_ip
   const camera_username = process.env['REACT_APP_CAMERA_USERNAME']
   const camera_password = process.env['REACT_APP_CAMERA_PASSWORD']
-  console.log(`camera_ip: ${camera_ip}`)
+  console.log(`process.env: ${JSON.stringify(process.env)}`)
+  console.log(`camera_ip: ${window.camera_ip}`)
   useEffect(() => {
     authorize()
       .then(() => {
@@ -39,7 +40,7 @@ export const BasicStream = () => {
 
   return (
     <BasicPlayer
-      hostname="100.101.253.86"
+      hostname={camera_ip}
       format="RTP_H264"
       autoPlay
       autoRetry

@@ -5,6 +5,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
+console.log(`APPprocess.env: ${JSON.stringify(process.env)}`)
 
 
 window.addEventListener('error', e => {
