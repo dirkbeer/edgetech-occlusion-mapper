@@ -39,7 +39,7 @@ export const BasicStream = () => {
 
   return (
     <BasicPlayer
-      hostname="10.20.26.11"
+      hostname={camera_ip}
       format="RTP_H264"
       autoPlay
       autoRetry
