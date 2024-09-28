@@ -4,14 +4,15 @@ import { BasicPlayer } from 'media-stream-player'
 // Force a login by fetching usergroup
 const authorize = async () => {
   try {
-    await window.fetch('/axis-cgi/usergroup.cgi', {
+    const camera_ip = window.camera_ip; // Get the correct camera IP
+    await window.fetch(`http://${camera_ip}/axis-cgi/usergroup.cgi`, {
       credentials: 'include',
       mode: 'no-cors',
-    })
+    });
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-}
+};
 
 /**
  * Example application that uses the `BasicPlayer` component.
